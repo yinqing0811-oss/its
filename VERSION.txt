@@ -1,0 +1,4 @@
+ITS Python 智能教学系统
+版本: v1.3
+Git commit: 74c9d4b v1.3 add custom coding judge input
+打包说明: Windows 静态前端部署包，已将 lucide 图标库本地化到 vendor/lucide.js。

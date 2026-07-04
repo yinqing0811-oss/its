@@ -1,0 +1,1735 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ITS 智能教学系统</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="vendor/lucide.js" defer></script>
+    <script src="script.js" defer></script>
+  </head>
+  <body class="auth-gated">
+    <section class="role-gate" aria-labelledby="roleGateTitle">
+      <div class="role-gate__panel">
+        <a class="brand role-gate__brand" href="#" aria-label="ITS 首页">
+          <span class="brand-mark">IT</span>
+          <span>
+            <strong>ITS</strong>
+            <small>Python 智能教学空间</small>
+          </span>
+        </a>
+
+        <div class="role-view" data-auth-view="role">
+          <span class="eyebrow">Role Check</span>
+          <h1 id="roleGateTitle">请选择你的身份</h1>
+          <p>系统会根据学生或教师身份进入不同工作台，并加载对应的数据权限与功能入口。</p>
+
+          <div class="role-options" aria-label="身份选择">
+            <button class="role-card" type="button" data-role="student">
+              <span class="role-card__icon"><i data-lucide="graduation-cap"></i></span>
+              <strong>学生入口</strong>
+              <small>进入练习、诊断反馈、学习进度和 Python 智能小助手。</small>
+            </button>
+            <button class="role-card featured" type="button" data-role="teacher">
+              <span class="role-card__icon"><i data-lucide="book-open-check"></i></span>
+              <strong>教师入口</strong>
+              <small>查看学生数据、管理题库、发放练习并配置智能小助手规范。</small>
+            </button>
+          </div>
+
+          <div class="login-strip">
+            <span>演示流程</span>
+            <strong>选择身份后进入对应登录页</strong>
+          </div>
+        </div>
+
+        <form class="login-view" data-auth-view="login" hidden>
+          <button class="back-button" type="button" data-auth-back>
+            <i data-lucide="arrow-left"></i>
+            返回身份选择
+          </button>
+
+          <span class="eyebrow" data-login-copy="eyebrow">Teacher Login</span>
+          <h1 data-login-copy="title">教师登录</h1>
+          <p data-login-copy="description">登录后可查看班级数据、管理教学内容、发放练习并配置智能小助手规范。</p>
+
+          <div class="login-grid">
+            <label>
+              <span>账号</span>
+              <input data-login-field="account" type="text" value="teacher@its.local" autocomplete="username" />
+            </label>
+            <label>
+              <span>密码</span>
+              <input type="password" value="123456" autocomplete="current-password" />
+            </label>
+          </div>
+
+          <div class="permission-card">
+            <strong data-login-copy="permissionTitle">教师端权限</strong>
+            <ul data-login-copy="permissions">
+              <li>查看所有学生学习数据与诊断报告</li>
+              <li>管理知识点、题库、测试用例和教学资源</li>
+              <li>发放练习并配置 Python 智能小助手规范</li>
+            </ul>
+          </div>
+
+          <button class="login-button" type="submit" data-login-copy="button">进入教师工作台</button>
+        </form>
+      </div>
+    </section>
+
+    <div class="app-frame">
+      <header class="app-header">
+        <div class="brand-block">
+          <button class="icon-button mobile-menu" type="button" aria-label="展开导航">
+            <i data-lucide="panel-left"></i>
+          </button>
+          <a class="brand" href="#" aria-label="ITS 首页">
+            <span class="brand-mark">IT</span>
+            <span>
+              <strong>ITS</strong>
+              <small>Python 智能教学空间</small>
+            </span>
+          </a>
+          <span class="page-title" data-role-copy="pageTitle">教师工作台</span>
+          <span class="role-badge" data-role-copy="roleBadge">教师端</span>
+        </div>
+
+        <nav class="header-nav" aria-label="顶部导航">
+          <a href="#analytics" data-visible-role="teacher">数据看板</a>
+          <a href="#student-model" data-visible-role="teacher">学生模型</a>
+          <a href="#teaching-model" data-visible-role="teacher">教学模型</a>
+          <a href="#assignments" data-visible-role="teacher">练习发放</a>
+          <a href="#domain-model" data-visible-role="teacher">领域模型</a>
+          <a href="#student-tasks" data-visible-role="student">我的任务</a>
+          <a href="#practice-center" data-visible-role="student">练习中心</a>
+          <a href="#coding-lab" data-visible-role="student">在线编程</a>
+          <a href="#diagnosis-history" data-visible-role="student">诊断历史</a>
+          <a href="#student-progress" data-visible-role="student">学习进度</a>
+          <a href="#private">智能助手</a>
+          <a href="#spaces" data-visible-role="teacher">学习空间</a>
+          <a href="#agents" data-visible-role="teacher">AI 助教</a>
+          <a href="#lesson" data-visible-role="teacher">教学流程</a>
+          <a href="#library" data-visible-role="teacher">题库素材</a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="profile-menu" aria-label="当前用户">
+            <strong>林</strong>
+            <span data-role-copy="userName">林老师</span>
+            <i data-lucide="chevron-down"></i>
+          </div>
+          <button class="chip-button switch-role-button" type="button" data-logout>
+            <i data-lucide="log-out"></i>
+            切换身份
+          </button>
+        </div>
+      </header>
+
+      <div class="app-body">
+        <aside class="sidebar" aria-label="系统导航">
+          <nav class="side-nav">
+            <button class="nav-item active" type="button" data-section="home">
+              <i data-lucide="home"></i>
+              <span>首页</span>
+            </button>
+            <button class="nav-item" type="button" data-section="analytics" data-visible-role="teacher">
+              <i data-lucide="chart-no-axes-combined"></i>
+              <span>数据看板</span>
+            </button>
+            <button class="nav-item" type="button" data-section="student-model" data-visible-role="teacher">
+              <i data-lucide="user-round-search"></i>
+              <span>学生模型</span>
+            </button>
+            <button class="nav-item" type="button" data-section="teaching-model" data-visible-role="teacher">
+              <i data-lucide="route"></i>
+              <span>教学模型</span>
+            </button>
+            <button class="nav-item" type="button" data-section="assignments" data-visible-role="teacher">
+              <i data-lucide="clipboard-list"></i>
+              <span>练习发放</span>
+            </button>
+            <button class="nav-item" type="button" data-section="domain-model" data-visible-role="teacher">
+              <i data-lucide="database"></i>
+              <span>领域模型</span>
+            </button>
+            <button class="nav-item" type="button" data-section="student-tasks" data-visible-role="student">
+              <i data-lucide="list-checks"></i>
+              <span>我的任务</span>
+            </button>
+            <button class="nav-item" type="button" data-section="practice-center" data-visible-role="student">
+              <i data-lucide="code-2"></i>
+              <span>练习中心</span>
+            </button>
+            <button class="nav-item" type="button" data-section="coding-lab" data-visible-role="student">
+              <i data-lucide="square-terminal"></i>
+              <span>在线编程</span>
+            </button>
+            <button class="nav-item" type="button" data-section="diagnosis-history" data-visible-role="student">
+              <i data-lucide="history"></i>
+              <span>诊断历史</span>
+            </button>
+            <button class="nav-item" type="button" data-section="student-progress" data-visible-role="student">
+              <i data-lucide="chart-column"></i>
+              <span>学习进度</span>
+            </button>
+            <button class="nav-item" type="button" data-section="group" data-visible-role="teacher">
+              <i data-lucide="messages-square"></i>
+              <span>班级问答</span>
+            </button>
+            <button class="nav-item" type="button" data-section="private">
+              <i data-lucide="message-circle"></i>
+              <span>智能助手</span>
+            </button>
+            <button class="nav-item" type="button" data-section="agents" data-visible-role="teacher">
+              <i data-lucide="bot"></i>
+              <span>AI 助教</span>
+            </button>
+            <button class="nav-item" type="button" data-section="student-model" data-visible-role="teacher">
+              <i data-lucide="gem"></i>
+              <span>能力中心</span>
+            </button>
+            <button class="nav-item" type="button" data-section="spaces" data-visible-role="teacher">
+              <i data-lucide="layout-grid"></i>
+              <span>项目空间</span>
+            </button>
+            <button class="nav-item" type="button" data-section="library" data-visible-role="teacher">
+              <i data-lucide="library"></i>
+              <span>题库素材</span>
+            </button>
+          </nav>
+
+          <div class="version-card">
+            <span>v1.1</span>
+            <strong>Role Shell</strong>
+          </div>
+        </aside>
+
+        <main class="workspace">
+          <section class="welcome-panel" id="home" aria-labelledby="welcomeTitle">
+            <span class="eyebrow">Python ITS Studio</span>
+            <h1 id="welcomeTitle" data-role-copy="welcomeTitle">下午好，林老师 · 今天继续点亮每个学生</h1>
+            <p data-role-copy="welcomeDesc">你有 3 个 Python 学习空间、6 位 AI 助教待命，系统已整理好今日薄弱点、待发练习和课堂流程。</p>
+
+            <div class="command-box">
+              <i data-lucide="sparkles"></i>
+              <input
+                id="commandInput"
+                type="text"
+                value="生成 Python A 班 15 分钟滑动窗口补弱课"
+                aria-label="输入教学任务"
+              />
+              <span class="shortcut">Enter</span>
+              <button id="commandButton" type="button" aria-label="提交教学任务">
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+          </section>
+
+          <section
+            class="section-block student-dashboard"
+            id="student-tasks"
+            aria-labelledby="studentTasksTitle"
+            data-visible-role="student"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="studentTasksTitle">我的学习任务</h2>
+                <span>Learning Desk</span>
+              </div>
+            </div>
+
+            <div class="insight-grid">
+              <article class="metric-card">
+                <span>今日任务</span>
+                <strong>3</strong>
+                <p>1 个算法题，2 个复习点</p>
+              </article>
+              <article class="metric-card">
+                <span>综合掌握度</span>
+                <strong>64%</strong>
+                <p>较上次练习 +5%</p>
+              </article>
+              <article class="metric-card">
+                <span>连续学习</span>
+                <strong>5 天</strong>
+                <p>保持节奏，别让递归偷跑</p>
+              </article>
+              <article class="metric-card alert">
+                <span>待复习错题</span>
+                <strong>5</strong>
+                <p>边界处理和字典状态优先</p>
+              </article>
+            </div>
+          </section>
+
+          <section
+            class="section-block student-workbench"
+            id="practice-center"
+            aria-labelledby="practiceCenterTitle"
+            data-visible-role="student"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="practiceCenterTitle">练习中心</h2>
+                <span>Practice Center</span>
+              </div>
+            </div>
+
+            <div class="student-workbench-grid">
+              <article class="dashboard-card current-practice-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>当前推荐题</h3>
+                    <span>由教学模型根据掌握度和错误画像推荐</span>
+                  </div>
+                  <span class="status-pill">中等 · 20 分钟</span>
+                </div>
+
+                <div class="practice-hero">
+                  <span class="task-icon blue">SW</span>
+                  <div>
+                    <h3>最长无重复子串</h3>
+                    <p>目标：维护一个不含重复字符的窗口，并正确更新左边界。</p>
+                    <div class="tag-row">
+                      <span>滑动窗口</span>
+                      <span>字典</span>
+                      <span>边界处理</span>
+                    </div>
+                  </div>
+                </div>
+
+                <pre class="code-preview"><code>def length_of_longest_substring(s):
+    left = 0
+    seen = {}
+    # 思考：遇到重复字符时，left 应该如何更新？</code></pre>
+
+                <div class="practice-actions">
+                  <button class="login-button" type="button" data-scroll-target="coding-lab">进入在线编程</button>
+                </div>
+              </article>
+
+              <article class="dashboard-card student-assistant-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>Python 智能小助手</h3>
+                    <span>苏格拉底式提问，不直接给完整答案</span>
+                  </div>
+                </div>
+                <div class="assistant-prompt">
+                  <p>如果窗口里已经出现过当前字符，你觉得左指针应该移动到哪里？</p>
+                  <span>今日已用提示 2/5</span>
+                </div>
+                <button class="secondary-button" type="button" data-scroll-target="private">继续对话</button>
+              </article>
+
+              <article class="dashboard-card recommendation-reason-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>为什么推荐这道题？</h3>
+                    <span>教学模型决策解释</span>
+                  </div>
+                </div>
+                <div class="reason-stack">
+                  <div>
+                    <span>薄弱知识点</span>
+                    <strong>滑动窗口掌握度 48%，低于进入挑战题阈值。</strong>
+                  </div>
+                  <div>
+                    <span>错误画像</span>
+                    <strong>最近 3 次提交中出现 2 次边界错误。</strong>
+                  </div>
+                  <div>
+                    <span>难度匹配</span>
+                    <strong>题目 Elo 1280，略高于当前算法 Elo 1210。</strong>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="dashboard-card student-progress-panel"
+                id="student-progress"
+                aria-labelledby="studentProgressTitle"
+              >
+                <div class="card-heading">
+                  <div>
+                    <h3 id="studentProgressTitle">学习进度</h3>
+                    <span>来自学生模型的个人画像</span>
+                  </div>
+                </div>
+                <div class="mastery-list">
+                  <div>
+                    <strong>哈希表</strong>
+                    <span><i style="--value: 78%"></i>78%</span>
+                  </div>
+                  <div>
+                    <strong>双指针</strong>
+                    <span><i style="--value: 66%"></i>66%</span>
+                  </div>
+                  <div>
+                    <strong>滑动窗口</strong>
+                    <span><i style="--value: 48%"></i>48%</span>
+                  </div>
+                  <div>
+                    <strong>复杂度分析</strong>
+                    <span><i style="--value: 54%"></i>54%</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card review-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>错题与复习</h3>
+                    <span>按遗忘风险排序</span>
+                  </div>
+                </div>
+                <div class="review-list">
+                  <div>
+                    <strong>空字符串边界用例</strong>
+                    <span>今天复习</span>
+                  </div>
+                  <div>
+                    <strong>字典 last index 更新</strong>
+                    <span>明天前完成</span>
+                  </div>
+                  <div>
+                    <strong>O(n²) 到 O(n) 优化</strong>
+                    <span>本周重点</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section
+            class="section-block coding-lab"
+            id="coding-lab"
+            aria-labelledby="codingLabTitle"
+            data-visible-role="student"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="codingLabTitle">在线编程与诊断</h2>
+                <span>Coding Lab</span>
+              </div>
+              <div class="library-actions">
+                <button class="primary-button" type="button" data-run-code><i data-lucide="play"></i>运行测试</button>
+              </div>
+            </div>
+
+            <div class="coding-grid">
+              <article class="dashboard-card problem-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>最长无重复子串</h3>
+                    <span>滑动窗口 · 字典 · 边界处理</span>
+                  </div>
+                  <span class="status-pill">Q 矩阵已标注</span>
+                </div>
+
+                <div class="problem-statement">
+                  <p>给定一个字符串 <code>s</code>，请返回其中不含重复字符的最长子串长度。</p>
+                  <dl>
+                    <div><dt>输入</dt><dd><code>"abcabcbb"</code></dd></div>
+                    <div><dt>输出</dt><dd><code>3</code></dd></div>
+                    <div><dt>要求</dt><dd>目标复杂度为 <code>O(n)</code>，不要使用双重循环枚举所有子串。</dd></div>
+                  </dl>
+                </div>
+
+                <div class="testcase-list">
+                  <article>
+                    <span>样例</span>
+                    <strong>"abcabcbb" → 3</strong>
+                  </article>
+                  <article>
+                    <span>边界</span>
+                    <strong>"" → 0</strong>
+                  </article>
+                  <article>
+                    <span>重复</span>
+                    <strong>"bbbbb" → 1</strong>
+                  </article>
+                  <article>
+                    <span>隐藏</span>
+                    <strong>"abba" → 2</strong>
+                  </article>
+                </div>
+              </article>
+
+              <article class="dashboard-card editor-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>代码编辑器</h3>
+                    <span>当前为前端演示编辑区，后续接入 Python 沙箱运行</span>
+                  </div>
+                </div>
+                <textarea id="studentCode" class="code-editor" spellcheck="false" aria-label="Python 代码编辑器">def length_of_longest_substring(s):
+    left = 0
+    seen = {}
+    best = 0
+
+    for right, ch in enumerate(s):
+        if ch in seen:
+            left = seen[ch] + 1
+        seen[ch] = right
+        best = max(best, right - left + 1)
+
+    return best</textarea>
+
+                <div class="judge-panel" aria-label="自定义测试输入">
+                  <div class="judge-panel__heading">
+                    <h4>自定义测试输入</h4>
+                    <p>输入字符串参数 <code>s</code> 和预期输出，运行后会同步更新右侧诊断反馈。</p>
+                  </div>
+                  <div class="judge-grid">
+                    <label class="judge-field">
+                      <span>输入 s</span>
+                      <textarea id="customTestInput" rows="2" spellcheck="false" aria-label="自定义测试输入">abba</textarea>
+                    </label>
+                    <label class="judge-field">
+                      <span>预期输出</span>
+                      <input id="customExpectedOutput" type="text" value="2" aria-label="自定义测试预期输出" />
+                    </label>
+                  </div>
+                  <p class="custom-result" data-custom-result>尚未运行自定义测试。</p>
+                </div>
+
+                <div class="editor-actions">
+                  <button class="secondary-button" type="button" data-run-code>运行测试</button>
+                  <button class="login-button" type="button" data-submit-code>提交诊断</button>
+                </div>
+              </article>
+
+              <aside class="dashboard-card diagnosis-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>诊断反馈</h3>
+                    <span>运行后显示测试与知识点诊断</span>
+                  </div>
+                </div>
+
+                <div class="diagnosis-status" data-diagnosis-status>
+                  <strong>等待运行</strong>
+                  <p>点击“运行测试”后，系统会模拟输出测试结果、错误类型和下一步提示。</p>
+                </div>
+
+                <div class="diagnosis-list">
+                  <div>
+                    <span>测试通过</span>
+                    <strong data-pass-count>0/4</strong>
+                  </div>
+                  <div>
+                    <span>薄弱知识点</span>
+                    <strong data-weak-point>待诊断</strong>
+                  </div>
+                  <div>
+                    <span>建议提示</span>
+                    <strong data-next-hint>先运行测试</strong>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section
+            class="section-block diagnosis-history"
+            id="diagnosis-history"
+            aria-labelledby="diagnosisHistoryTitle"
+            data-visible-role="student"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="diagnosisHistoryTitle">诊断历史</h2>
+                <span>Diagnosis Timeline</span>
+              </div>
+            </div>
+
+            <div class="diagnosis-history-grid">
+              <article class="dashboard-card latest-diagnosis-card" data-latest-diagnosis>
+                <div class="card-heading">
+                  <div>
+                    <h3>最新诊断</h3>
+                    <span>提交代码后会同步更新</span>
+                  </div>
+                  <span class="status-pill" data-latest-status>等待提交</span>
+                </div>
+                <div class="latest-diagnosis-body">
+                  <strong data-latest-title>尚未运行本次诊断</strong>
+                  <p data-latest-summary>完成在线编程提交后，这里会显示测试通过数、错误类型和知识点定位。</p>
+                </div>
+                <div class="model-update-grid">
+                  <div>
+                    <span>掌握度变化</span>
+                    <strong data-mastery-delta>待更新</strong>
+                  </div>
+                  <div>
+                    <span>错误画像</span>
+                    <strong data-error-profile>待更新</strong>
+                  </div>
+                  <div>
+                    <span>下一步</span>
+                    <strong data-next-action>先运行测试</strong>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card diagnosis-timeline-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>历史记录</h3>
+                    <span>最近 3 次提交</span>
+                  </div>
+                </div>
+                <div class="timeline-list">
+                  <div>
+                    <span>06/20 19:40</span>
+                    <strong>最长无重复子串 · 3/4</strong>
+                    <p>边界错误：abba 用例导致 left 回退。</p>
+                  </div>
+                  <div>
+                    <span>06/20 18:10</span>
+                    <strong>两数之和变式 · 4/4</strong>
+                    <p>哈希表使用稳定，复杂度达标。</p>
+                  </div>
+                  <div>
+                    <span>06/19 21:05</span>
+                    <strong>文本词频分析器 · 6/8</strong>
+                    <p>文件为空和大小写归一化处理不足。</p>
+                  </div>
+                </div>
+              </article>
+
+              <aside class="dashboard-card recommendation-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>教学模型建议</h3>
+                    <span>根据学生模型自动生成</span>
+                  </div>
+                </div>
+                <div class="recommendation-stack">
+                  <div>
+                    <span>补救练习</span>
+                    <strong>窗口左边界专项 2 题</strong>
+                  </div>
+                  <div>
+                    <span>复习安排</span>
+                    <strong>明天复习字典 last index 更新</strong>
+                  </div>
+                  <div>
+                    <span>小助手策略</span>
+                    <strong>继续使用二级追问，不给代码框架</strong>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section class="section-block assistant-studio" id="private" aria-labelledby="assistantStudioTitle">
+            <div class="section-title">
+              <div>
+                <h2 id="assistantStudioTitle">Python 智能小助手</h2>
+                <span>Socratic Assistant</span>
+              </div>
+            </div>
+
+            <div class="assistant-large-layout" data-visible-role="student">
+              <article class="dashboard-card assistant-chat-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>引导式对话</h3>
+                    <span>更大的对话面板，方便围绕代码逐步追问</span>
+                  </div>
+                  <span class="status-pill">不会直接给完整答案</span>
+                </div>
+
+                <div class="assistant-thread" data-assistant-thread>
+                  <article class="assistant-message ai">
+                    <span>Python 小助手 · 现在</span>
+                    <p>我们先不急着改代码。你能先说说：当前窗口里应该始终满足什么条件吗？</p>
+                  </article>
+                  <article class="assistant-message student">
+                    <span>林同学 · 刚刚</span>
+                    <p>窗口里不能有重复字符。</p>
+                  </article>
+                  <article class="assistant-message ai">
+                    <span>Python 小助手 · 现在</span>
+                    <p>很好。那当遇到一个重复字符时，你觉得左边界应该移动到“重复字符上次出现位置之后”，还是还需要和当前 left 比较一下？为什么？</p>
+                  </article>
+                </div>
+
+                <div class="assistant-composer">
+                  <textarea id="assistantInput" rows="3" placeholder="把你的想法写出来，小助手会继续追问而不是直接给答案。"></textarea>
+                  <button class="login-button" type="button" data-assistant-send>
+                    <i data-lucide="send"></i>
+                    发送
+                  </button>
+                </div>
+              </article>
+
+              <aside class="dashboard-card assistant-context-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>当前上下文</h3>
+                    <span>小助手会结合任务、诊断和学生模型提问</span>
+                  </div>
+                </div>
+                <div class="context-stack">
+                  <div>
+                    <span>当前题目</span>
+                    <strong>最长无重复子串</strong>
+                  </div>
+                  <div>
+                    <span>薄弱知识点</span>
+                    <strong>滑动窗口左边界</strong>
+                  </div>
+                  <div>
+                    <span>提示策略</span>
+                    <strong>先提问，再给线索，最后给框架</strong>
+                  </div>
+                  <div>
+                    <span>答案边界</span>
+                    <strong>不提供完整代码，不直接给最终答案</strong>
+                  </div>
+                </div>
+              </aside>
+            </div>
+
+            <div class="assistant-policy-layout" data-visible-role="teacher">
+              <article class="dashboard-card policy-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>小助手人设规范</h3>
+                    <span>教师端配置学生对话的语气、提示深度和答案边界</span>
+                  </div>
+                  <span class="status-pill">当前策略 v0.1</span>
+                </div>
+
+                <div class="policy-grid">
+                  <label class="field-group">
+                    <span>助手名称</span>
+                    <input type="text" value="Python 苏格拉底小助手" />
+                  </label>
+                  <label class="field-group">
+                    <span>语气风格</span>
+                    <select>
+                      <option>耐心、启发式、鼓励学生独立思考</option>
+                      <option>严谨、简洁、偏算法竞赛风格</option>
+                      <option>轻松、陪伴式、适合初学者</option>
+                    </select>
+                  </label>
+                  <label class="field-group">
+                    <span>提示深度</span>
+                    <select>
+                      <option>先追问，再给关键线索</option>
+                      <option>只允许概念提示</option>
+                      <option>允许伪代码框架</option>
+                    </select>
+                  </label>
+                  <label class="field-group">
+                    <span>连续失败后</span>
+                    <select>
+                      <option>3 次后允许给代码框架，但不给完整答案</option>
+                      <option>2 次后给更具体的算法步骤</option>
+                      <option>只推荐复习资源，不给代码</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="policy-rules">
+                  <label><input type="checkbox" checked /> 不直接给完整代码</label>
+                  <label><input type="checkbox" checked /> 不直接给最终答案</label>
+                  <label><input type="checkbox" checked /> 每次只提示一个关键点</label>
+                  <label><input type="checkbox" checked /> 必须结合诊断模型输出追问</label>
+                </div>
+
+                <button class="login-button" type="button" data-policy-save>保存小助手规范</button>
+                <p class="publish-status" data-policy-status>当前配置尚未修改。</p>
+              </article>
+
+              <aside class="dashboard-card policy-preview-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>学生侧预览</h3>
+                    <span>保存前可检查小助手是否符合教学边界</span>
+                  </div>
+                </div>
+                <div class="assistant-prompt">
+                  <p>如果你的代码在 <code>"abba"</code> 上失败，我们先观察 left 的变化。它有没有可能被更新回更小的位置？</p>
+                  <span>提示级别：二级线索，不给完整代码</span>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <section
+            class="section-block teacher-dashboard"
+            id="analytics"
+            aria-labelledby="analyticsTitle"
+            data-visible-role="teacher"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="analyticsTitle">班级数据看板</h2>
+                <span>Class Insight</span>
+              </div>
+            </div>
+
+            <div class="insight-grid">
+              <article class="metric-card">
+                <span>学生总数</span>
+                <strong>42</strong>
+                <p>今日活跃 36 人</p>
+              </article>
+              <article class="metric-card">
+                <span>平均掌握度</span>
+                <strong>68%</strong>
+                <p>较上周 +6%</p>
+              </article>
+              <article class="metric-card">
+                <span>任务完成率</span>
+                <strong>76%</strong>
+                <p>12 个任务进行中</p>
+              </article>
+              <article class="metric-card alert">
+                <span>需干预学生</span>
+                <strong>8</strong>
+                <p>边界与复杂度错误高频</p>
+              </article>
+            </div>
+
+            <div class="analytics-grid">
+              <article class="dashboard-card student-progress-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>学生学习进度</h3>
+                    <span>按最近诊断排序</span>
+                  </div>
+                </div>
+
+                <div class="student-table" role="table" aria-label="学生学习进度">
+                  <div class="student-row header" role="row">
+                    <span>学生</span>
+                    <span>当前模块</span>
+                    <span>掌握度</span>
+                    <span>高频错误</span>
+                    <span>建议动作</span>
+                  </div>
+                  <div class="student-row" role="row">
+                    <strong>陈思雨</strong>
+                    <span>滑动窗口</span>
+                    <span><i style="--value: 48%"></i>48%</span>
+                    <em>边界错误</em>
+                    <span class="row-action">补弱</span>
+                  </div>
+                  <div class="student-row" role="row">
+                    <strong>王越</strong>
+                    <span>哈希表计数</span>
+                    <span><i style="--value: 62%"></i>62%</span>
+                    <em>状态更新</em>
+                    <span class="row-action">讲评</span>
+                  </div>
+                  <div class="student-row" role="row">
+                    <strong>周可</strong>
+                    <span>复杂度分析</span>
+                    <span><i style="--value: 41%"></i>41%</span>
+                    <em>超时</em>
+                    <span class="row-action">降阶</span>
+                  </div>
+                  <div class="student-row" role="row">
+                    <strong>李然</strong>
+                    <span>双指针</span>
+                    <span><i style="--value: 82%"></i>82%</span>
+                    <em>已稳定</em>
+                    <span class="row-action">挑战</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card weak-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>薄弱知识点排行</h3>
+                    <span>来自 Q 矩阵与诊断模型</span>
+                  </div>
+                </div>
+                <div class="weak-list">
+                  <div>
+                    <strong>滑动窗口左边界</strong>
+                    <span><i style="--value: 37%"></i>37%</span>
+                  </div>
+                  <div>
+                    <strong>字典计数状态</strong>
+                    <span><i style="--value: 49%"></i>49%</span>
+                  </div>
+                  <div>
+                    <strong>边界测试设计</strong>
+                    <span><i style="--value: 52%"></i>52%</span>
+                  </div>
+                  <div>
+                    <strong>时间复杂度判断</strong>
+                    <span><i style="--value: 56%"></i>56%</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card error-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>错误类型分布</h3>
+                    <span>近 7 天提交记录</span>
+                  </div>
+                </div>
+                <div class="error-bars">
+                  <div><span>边界错误</span><i style="--value: 74%"></i><strong>74%</strong></div>
+                  <div><span>状态更新</span><i style="--value: 58%"></i><strong>58%</strong></div>
+                  <div><span>复杂度错误</span><i style="--value: 42%"></i><strong>42%</strong></div>
+                  <div><span>输出格式</span><i style="--value: 21%"></i><strong>21%</strong></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section
+            class="section-block student-model-admin"
+            id="student-model"
+            aria-labelledby="studentModelTitle"
+            data-visible-role="teacher"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="studentModelTitle">学生模型详情</h2>
+                <span>Student Model</span>
+              </div>
+            </div>
+
+            <div class="student-model-grid">
+              <aside class="dashboard-card student-selector-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>学生列表</h3>
+                    <span>按干预优先级排序</span>
+                  </div>
+                </div>
+                <div class="student-selector-list">
+                  <button class="student-selector active" type="button" data-student-selector>
+                    <strong>陈思雨</strong>
+                    <span>滑动窗口薄弱 · 需干预</span>
+                  </button>
+                  <button class="student-selector" type="button" data-student-selector>
+                    <strong>周可</strong>
+                    <span>复杂度分析薄弱 · 降阶</span>
+                  </button>
+                  <button class="student-selector" type="button" data-student-selector>
+                    <strong>王越</strong>
+                    <span>字典状态更新 · 讲评</span>
+                  </button>
+                  <button class="student-selector" type="button" data-student-selector>
+                    <strong>李然</strong>
+                    <span>表现稳定 · 可挑战</span>
+                  </button>
+                </div>
+              </aside>
+
+              <article class="dashboard-card student-profile-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>陈思雨 · 学生画像</h3>
+                    <span>算法提升路径 · Python A 班</span>
+                  </div>
+                  <span class="status-pill">置信度 0.82</span>
+                </div>
+
+                <div class="profile-metrics">
+                  <div><span>综合掌握度</span><strong>58%</strong></div>
+                  <div><span>算法 Elo</span><strong>1210</strong></div>
+                  <div><span>提示依赖</span><strong>中</strong></div>
+                  <div><span>遗忘风险</span><strong>0.36</strong></div>
+                </div>
+
+                <div class="mastery-list teacher-mastery-list">
+                  <div>
+                    <strong>哈希表</strong>
+                    <span><i style="--value: 74%"></i>74%</span>
+                  </div>
+                  <div>
+                    <strong>双指针</strong>
+                    <span><i style="--value: 62%"></i>62%</span>
+                  </div>
+                  <div>
+                    <strong>滑动窗口</strong>
+                    <span><i style="--value: 44%"></i>44%</span>
+                  </div>
+                  <div>
+                    <strong>边界处理</strong>
+                    <span><i style="--value: 38%"></i>38%</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card ability-error-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>能力与错误画像</h3>
+                    <span>来自提交、提示和测试失败模式</span>
+                  </div>
+                </div>
+                <div class="ability-grid">
+                  <div><span>调试能力</span><strong>0.61</strong></div>
+                  <div><span>边界处理</span><strong>0.38</strong></div>
+                  <div><span>复杂度分析</span><strong>0.52</strong></div>
+                  <div><span>代码质量</span><strong>0.69</strong></div>
+                </div>
+                <div class="error-chip-list">
+                  <span>边界错误 8 次</span>
+                  <span>状态更新 5 次</span>
+                  <span>隐藏用例失败 4 次</span>
+                </div>
+              </article>
+
+              <article class="dashboard-card model-state-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>模型状态</h3>
+                    <span>BKT / Elo / 遗忘模型</span>
+                  </div>
+                </div>
+                <div class="model-state-list">
+                  <div>
+                    <span>BKT 掌握概率</span>
+                    <strong>滑动窗口 0.44</strong>
+                  </div>
+                  <div>
+                    <span>Elo 难度匹配</span>
+                    <strong>建议 1180-1260</strong>
+                  </div>
+                  <div>
+                    <span>复习提醒</span>
+                    <strong>边界处理 24 小时内</strong>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card learning-history-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>最近学习历史</h3>
+                    <span>诊断模型输出已回写学生模型</span>
+                  </div>
+                </div>
+                <div class="timeline-list compact">
+                  <div>
+                    <span>刚刚</span>
+                    <strong>最长无重复子串 · 3/4</strong>
+                    <p>更新：滑动窗口 -0.03，边界错误 +1。</p>
+                  </div>
+                  <div>
+                    <span>昨天</span>
+                    <strong>两数之和变式 · 4/4</strong>
+                    <p>更新：哈希表 +0.06，复杂度达标。</p>
+                  </div>
+                  <div>
+                    <span>06/18</span>
+                    <strong>文本词频分析器 · 6/8</strong>
+                    <p>更新：项目能力 +0.04，异常处理待补。</p>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section
+            class="section-block teaching-model-admin"
+            id="teaching-model"
+            aria-labelledby="teachingModelTitle"
+            data-visible-role="teacher"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="teachingModelTitle">教学模型管理</h2>
+                <span>Teaching Model</span>
+              </div>
+              <div class="library-actions">
+                <button class="primary-button" type="button" data-teaching-save><i data-lucide="save"></i>保存策略</button>
+              </div>
+            </div>
+
+            <div class="teaching-model-grid">
+              <article class="dashboard-card recommendation-policy-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>推荐策略权重</h3>
+                    <span>决定下一题、补救内容和复习任务的排序</span>
+                  </div>
+                  <span class="status-pill">规则引擎 v0.1</span>
+                </div>
+
+                <div class="weight-list">
+                  <label>
+                    <span>薄弱知识点优先</span>
+                    <input type="range" min="0" max="100" value="45" data-weight-slider />
+                    <strong>45%</strong>
+                  </label>
+                  <label>
+                    <span>难度略高于当前能力</span>
+                    <input type="range" min="0" max="100" value="25" data-weight-slider />
+                    <strong>25%</strong>
+                  </label>
+                  <label>
+                    <span>遗忘风险复习</span>
+                    <input type="range" min="0" max="100" value="20" data-weight-slider />
+                    <strong>20%</strong>
+                  </label>
+                  <label>
+                    <span>挑战与项目迁移</span>
+                    <input type="range" min="0" max="100" value="10" data-weight-slider />
+                    <strong>10%</strong>
+                  </label>
+                </div>
+              </article>
+
+              <article class="dashboard-card intervention-rule-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>补救与难度调节</h3>
+                    <span>根据诊断结果触发教学动作</span>
+                  </div>
+                </div>
+                <div class="rule-builder">
+                  <div>
+                    <strong>连续 2 次边界错误</strong>
+                    <span>插入边界测试专项 + 二级提示</span>
+                  </div>
+                  <div>
+                    <strong>复杂度错误或超时</strong>
+                    <span>降到同知识点基础题，加入复杂度讲解</span>
+                  </div>
+                  <div>
+                    <strong>连续 3 题一次通过</strong>
+                    <span>提高题目 Elo 80 分或进入项目迁移</span>
+                  </div>
+                  <div>
+                    <strong>提示依赖偏高</strong>
+                    <span>下一题先限制提示，优先追问思路</span>
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card review-policy-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>复习调度</h3>
+                    <span>结合遗忘曲线和最近练习间隔</span>
+                  </div>
+                </div>
+                <div class="review-policy-grid">
+                  <label class="field-group">
+                    <span>高风险知识点</span>
+                    <select>
+                      <option>24 小时内插入复习题</option>
+                      <option>下次登录优先复习</option>
+                      <option>由教师统一发布</option>
+                    </select>
+                  </label>
+                  <label class="field-group">
+                    <span>复习题比例</span>
+                    <select>
+                      <option>每 5 题插入 1 题</option>
+                      <option>每 3 题插入 1 题</option>
+                      <option>只在错题后插入</option>
+                    </select>
+                  </label>
+                  <label class="field-group">
+                    <span>掌握度阈值</span>
+                    <input type="number" min="0" max="1" step="0.01" value="0.70" />
+                  </label>
+                </div>
+              </article>
+
+              <aside class="dashboard-card policy-preview-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>推荐结果预览</h3>
+                    <span>以陈思雨当前学生模型为例</span>
+                  </div>
+                </div>
+                <div class="recommendation-stack">
+                  <div>
+                    <span>下一题</span>
+                    <strong>最长无重复子串 · 中等</strong>
+                  </div>
+                  <div>
+                    <span>原因</span>
+                    <strong>滑动窗口薄弱 + 边界错误高频 + 难度略高</strong>
+                  </div>
+                  <div>
+                    <span>失败后</span>
+                    <strong>回到窗口左边界专项，并限制完整答案提示</strong>
+                  </div>
+                </div>
+                <p class="publish-status" data-teaching-status>当前策略尚未保存。</p>
+              </aside>
+            </div>
+          </section>
+
+          <section
+            class="section-block assignment-builder"
+            id="assignments"
+            aria-labelledby="assignmentsTitle"
+            data-visible-role="teacher"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="assignmentsTitle">题目管理与练习发放</h2>
+                <span>Assignment Builder</span>
+              </div>
+            </div>
+
+            <div class="assignment-grid">
+              <article class="dashboard-card question-bank-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>待发题目包</h3>
+                    <span>已完成知识点、Q 矩阵和测试用例标注</span>
+                  </div>
+                  <span class="status-pill">4 道题</span>
+                </div>
+
+                <div class="task-bank">
+                  <button class="task-card selected" type="button" data-task-card>
+                    <span class="task-icon blue">SW</span>
+                    <span>
+                      <strong>最长无重复子串</strong>
+                      <small>滑动窗口 · 字典 · 边界处理</small>
+                    </span>
+                    <em>中等</em>
+                  </button>
+                  <button class="task-card" type="button" data-task-card>
+                    <span class="task-icon mint">HT</span>
+                    <span>
+                      <strong>两数之和变式</strong>
+                      <small>哈希表 · 复杂度分析 · 返回值</small>
+                    </span>
+                    <em>基础</em>
+                  </button>
+                  <button class="task-card" type="button" data-task-card>
+                    <span class="task-icon gold">DP</span>
+                    <span>
+                      <strong>爬楼梯状态转移</strong>
+                      <small>动态规划 · 递推 · 初始状态</small>
+                    </span>
+                    <em>进阶</em>
+                  </button>
+                  <button class="task-card" type="button" data-task-card>
+                    <span class="task-icon slate">PR</span>
+                    <span>
+                      <strong>文本词频分析器</strong>
+                      <small>项目任务 · 文件 · Counter · 测试</small>
+                    </span>
+                    <em>项目</em>
+                  </button>
+                </div>
+
+                <div class="task-meta-grid">
+                  <div>
+                    <strong>Q 矩阵</strong>
+                    <p>滑动窗口 0.4，字典 0.25，边界处理 0.2，复杂度 0.15</p>
+                  </div>
+                  <div>
+                    <strong>测试覆盖</strong>
+                    <p>样例 3 组，边界 4 组，性能 1 组，隐藏 6 组</p>
+                  </div>
+                  <div>
+                    <strong>诊断规则</strong>
+                    <p>窗口收缩、左边界更新、重复字符状态、空字符串处理</p>
+                  </div>
+                </div>
+              </article>
+
+              <aside class="dashboard-card assignment-panel">
+                <div class="card-heading">
+                  <div>
+                    <h3>发布设置</h3>
+                    <span>选择对象、难度和小助手边界</span>
+                  </div>
+                </div>
+
+                <label class="field-group">
+                  <span>发放对象</span>
+                  <div class="segmented-control" aria-label="发放对象">
+                    <button class="active" type="button" data-assignment-option>Python A 班</button>
+                    <button type="button" data-assignment-option>8 名待干预学生</button>
+                  </div>
+                </label>
+
+                <label class="field-group">
+                  <span>练习难度</span>
+                  <select>
+                    <option>按学生掌握度自适应</option>
+                    <option>统一基础题</option>
+                    <option>统一挑战题</option>
+                  </select>
+                </label>
+
+                <label class="field-group">
+                  <span>截止时间</span>
+                  <input type="datetime-local" value="2026-06-21T18:00" />
+                </label>
+
+                <label class="field-group">
+                  <span>智能小助手规则</span>
+                  <select>
+                    <option>苏格拉底式引导，不给完整代码</option>
+                    <option>允许伪代码，不给最终答案</option>
+                    <option>仅允许概念提示</option>
+                  </select>
+                </label>
+
+                <div class="assignment-summary">
+                  <strong>发布后将生成</strong>
+                  <p>个性化题单、诊断规则、提示层级、教师端完成情况看板。</p>
+                </div>
+
+                <button class="login-button assignment-publish" type="button" data-assignment-publish>
+                  发布练习
+                </button>
+                <p class="publish-status" data-assignment-status>尚未发布，等待教师确认。</p>
+              </aside>
+            </div>
+          </section>
+
+          <section
+            class="section-block domain-model"
+            id="domain-model"
+            aria-labelledby="domainModelTitle"
+            data-visible-role="teacher"
+          >
+            <div class="section-title">
+              <div>
+                <h2 id="domainModelTitle">领域模型管理</h2>
+                <span>Domain Model</span>
+              </div>
+              <div class="library-actions">
+                <button class="primary-button" type="button" data-domain-save><i data-lucide="save"></i>保存模型</button>
+              </div>
+            </div>
+
+            <div class="domain-grid">
+              <article class="dashboard-card knowledge-map-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>Python 知识图谱</h3>
+                    <span>前置、补救、后继与易混关系</span>
+                  </div>
+                  <span class="status-pill">48 个知识点</span>
+                </div>
+
+                <div class="knowledge-map">
+                  <button class="knowledge-node active" type="button" data-knowledge-node>
+                    <strong>滑动窗口</strong>
+                    <span>前置：双指针、字典</span>
+                  </button>
+                  <button class="knowledge-node" type="button" data-knowledge-node>
+                    <strong>哈希表计数</strong>
+                    <span>前置：字典、循环</span>
+                  </button>
+                  <button class="knowledge-node" type="button" data-knowledge-node>
+                    <strong>边界处理</strong>
+                    <span>补救：列表索引、空输入</span>
+                  </button>
+                  <button class="knowledge-node" type="button" data-knowledge-node>
+                    <strong>复杂度分析</strong>
+                    <span>关联：性能测试、Elo 难度</span>
+                  </button>
+                </div>
+
+                <div class="relation-flow" aria-label="知识点关系">
+                  <span>双指针</span>
+                  <i data-lucide="arrow-right"></i>
+                  <span>滑动窗口</span>
+                  <i data-lucide="arrow-right"></i>
+                  <span>单调队列</span>
+                </div>
+              </article>
+
+              <article class="dashboard-card qmatrix-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>Q 矩阵编辑</h3>
+                    <span>题目与知识点权重映射</span>
+                  </div>
+                  <span class="status-pill">可诊断</span>
+                </div>
+
+                <div class="qmatrix-table" role="table" aria-label="Q 矩阵">
+                  <div class="qmatrix-row header" role="row">
+                    <span>题目</span>
+                    <span>滑动窗口</span>
+                    <span>字典</span>
+                    <span>边界</span>
+                    <span>复杂度</span>
+                  </div>
+                  <div class="qmatrix-row" role="row">
+                    <strong>最长无重复子串</strong>
+                    <input value="0.40" aria-label="滑动窗口权重" />
+                    <input value="0.25" aria-label="字典权重" />
+                    <input value="0.20" aria-label="边界权重" />
+                    <input value="0.15" aria-label="复杂度权重" />
+                  </div>
+                  <div class="qmatrix-row" role="row">
+                    <strong>两数之和变式</strong>
+                    <input value="0.00" aria-label="滑动窗口权重" />
+                    <input value="0.55" aria-label="字典权重" />
+                    <input value="0.15" aria-label="边界权重" />
+                    <input value="0.30" aria-label="复杂度权重" />
+                  </div>
+                  <div class="qmatrix-row" role="row">
+                    <strong>文本词频分析器</strong>
+                    <input value="0.00" aria-label="滑动窗口权重" />
+                    <input value="0.35" aria-label="字典权重" />
+                    <input value="0.25" aria-label="边界权重" />
+                    <input value="0.10" aria-label="复杂度权重" />
+                  </div>
+                </div>
+              </article>
+
+              <article class="dashboard-card testcase-rule-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>测试用例与诊断规则</h3>
+                    <span>支撑诊断模型识别错误类型</span>
+                  </div>
+                </div>
+                <div class="domain-rule-grid">
+                  <div>
+                    <strong>测试用例分类</strong>
+                    <p>样例 3 组、边界 4 组、隐藏 6 组、性能 1 组。</p>
+                  </div>
+                  <div>
+                    <strong>边界错误规则</strong>
+                    <p>空字符串、单字符、重复字符在窗口左侧时失败，映射到 BOUNDARY_ERROR。</p>
+                  </div>
+                  <div>
+                    <strong>复杂度错误规则</strong>
+                    <p>大规模输入超时或 AST 出现双重枚举子串，映射到 COMPLEXITY_ERROR。</p>
+                  </div>
+                </div>
+              </article>
+
+              <aside class="dashboard-card model-param-card">
+                <div class="card-heading">
+                  <div>
+                    <h3>模型参数</h3>
+                    <span>供学生模型和教学模型调用</span>
+                  </div>
+                </div>
+
+                <div class="param-stack">
+                  <label class="field-group">
+                    <span>BKT 初始掌握率</span>
+                    <input type="number" min="0" max="1" step="0.01" value="0.30" />
+                  </label>
+                  <label class="field-group">
+                    <span>BKT 学会概率</span>
+                    <input type="number" min="0" max="1" step="0.01" value="0.12" />
+                  </label>
+                  <label class="field-group">
+                    <span>题目 Elo</span>
+                    <input type="number" value="1280" />
+                  </label>
+                  <label class="field-group">
+                    <span>复习间隔</span>
+                    <select>
+                      <option>2 天后复习</option>
+                      <option>3 天后复习</option>
+                      <option>7 天后复习</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="assignment-summary">
+                  <strong>保存后影响</strong>
+                  <p>学生掌握度更新、题目推荐、补救路径和智能小助手上下文都会使用这些字段。</p>
+                </div>
+                <p class="publish-status" data-domain-status>当前领域模型尚未保存。</p>
+              </aside>
+            </div>
+          </section>
+
+          <section class="section-block" id="spaces" aria-labelledby="spacesTitle" data-visible-role="teacher">
+            <div class="section-title">
+              <div>
+                <h2 id="spacesTitle">我的学习空间</h2>
+                <span>Spaces</span>
+              </div>
+            </div>
+
+            <div class="space-grid">
+              <article class="space-card current" data-search="Python A 班 滑动窗口 诊断 作业">
+                <div class="avatar blue">Py</div>
+                <div>
+                  <h3>Python A 班 · 算法提升</h3>
+                  <p>用于保存诊断测、代码讲评、个性化练习与小助手对话记录。</p>
+                </div>
+                <span class="status-pill">当前</span>
+                <footer>
+                  <strong>42</strong><span>学生</span>
+                  <strong>6</strong><span>AI 助教</span>
+                  <strong>12</strong><span>任务</span>
+                </footer>
+              </article>
+
+              <article class="space-card" data-search="Python B 班 项目 文件 测试">
+                <div class="avatar mint">项</div>
+                <div>
+                  <h3>Python B 班 · 项目实战</h3>
+                  <p>沉淀项目需求、模块化模板、测试用例和代码质量反馈。</p>
+                </div>
+                <footer>
+                  <strong>38</strong><span>学生</span>
+                  <strong>4</strong><span>AI 助教</span>
+                  <strong>8</strong><span>任务</span>
+                </footer>
+              </article>
+
+              <article class="space-card" data-search="Python 冲刺 数据结构 动态规划 复习">
+                <div class="avatar gold">算</div>
+                <div>
+                  <h3>算法冲刺 · 数据结构复习</h3>
+                  <p>聚合周测数据、薄弱知识点和动态规划阶段复习节奏。</p>
+                </div>
+                <footer>
+                  <strong>35</strong><span>学生</span>
+                  <strong>5</strong><span>AI 助教</span>
+                  <strong>15</strong><span>任务</span>
+                </footer>
+              </article>
+            </div>
+          </section>
+
+          <div class="content-grid" data-visible-role="teacher">
+            <section class="section-block span-8" id="agents" aria-labelledby="agentsTitle">
+              <div class="section-title compact">
+                <div>
+                  <h2 id="agentsTitle">我的 AI 助教团队</h2>
+                  <span>My Digital Team</span>
+                </div>
+                <span class="status-pill">我的助教 6</span>
+              </div>
+
+              <div class="agent-grid">
+                <article class="agent-card" data-search="诊断 Python 代码 数据">
+                  <div class="agent-avatar blue">诊</div>
+                  <div>
+                    <h3>代码诊断师</h3>
+                    <p>自动分析提交代码、测试结果与错误类型，输出薄弱知识点。</p>
+                  </div>
+                </article>
+
+                <article class="agent-card" data-search="苏格拉底 智能助手 提问">
+                  <div class="agent-avatar milk">备</div>
+                  <div>
+                    <h3>苏格拉底辅导师</h3>
+                    <p>遵循不直接给答案规则，用追问引导学生拆解代码问题。</p>
+                  </div>
+                </article>
+
+                <article class="agent-card" data-search="题库 选题 算法 分层">
+                  <div class="agent-avatar mint">题</div>
+                  <div>
+                    <h3>算法选题专家</h3>
+                    <p>按掌握度、Elo 和 Q 矩阵生成 A/B/C 三档练习。</p>
+                  </div>
+                </article>
+
+                <article class="agent-card" data-search="项目 代码质量 测试 反馈">
+                  <div class="agent-avatar slate">家</div>
+                  <div>
+                    <h3>项目助教</h3>
+                    <p>检查模块化、测试覆盖、异常处理与项目任务完成度。</p>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section class="section-block span-4" aria-labelledby="dailyTitle">
+              <div class="section-title compact">
+                <div>
+                  <h2 id="dailyTitle">今日待办</h2>
+                  <span>Ready</span>
+                </div>
+              </div>
+
+              <div class="todo-stack">
+                <article>
+                  <span>09:00</span>
+                  <strong>课前代码诊断测</strong>
+                  <p>8 道题，预计 10 分钟。</p>
+                </article>
+                <article class="active">
+                  <span>10:30</span>
+                  <strong>滑动窗口代码讲评</strong>
+                  <p>聚焦窗口边界与字典状态更新。</p>
+                </article>
+                <article>
+                  <span>16:00</span>
+                  <strong>个性化练习发布</strong>
+                  <p>按掌握度、遗忘风险生成分层练习。</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="section-block span-5" id="group" aria-labelledby="chatTitle">
+              <div class="section-title compact">
+                <div>
+                  <h2 id="chatTitle">AI 群辅</h2>
+                  <span>Class Chat</span>
+                </div>
+                <span class="status-pill">6 位 AI 助教</span>
+              </div>
+
+              <div class="chat-layout">
+                <aside class="chat-list" aria-label="群辅列表">
+                  <article class="chat-item active">
+                    <span class="mini-avatar">A</span>
+                    <span>
+                      <strong>Python A 班群聊</strong>
+                      <small>滑动窗口补弱</small>
+                    </span>
+                  </article>
+                  <article class="chat-item">
+                    <span class="mini-avatar mint">助</span>
+                    <span>
+                      <strong>智能小助手规范</strong>
+                      <small>苏格拉底式引导</small>
+                    </span>
+                  </article>
+                  <article class="chat-item">
+                    <span class="mini-avatar gold">题</span>
+                    <span>
+                      <strong>练习发放草稿</strong>
+                      <small>3 组题目待确认</small>
+                    </span>
+                  </article>
+                </aside>
+
+                <div class="chat-panel">
+                  <article class="message ai">
+                    <span>代码诊断师 · 10:12</span>
+                    <p>陈思雨、王越、周可在“窗口左边界更新”环节连续失分，建议先做 6 分钟边界用例推演。</p>
+                  </article>
+                  <article class="message user">
+                    <span>林老师 · 10:14</span>
+                    <p>帮我改成课堂可直接投屏的讲评流程。</p>
+                  </article>
+                  <article class="message ai">
+                    <span>苏格拉底辅导师 · 10:15</span>
+                    <p>已生成三步：先问窗口含义，再追问重复字符处理，最后让学生自己写左边界更新条件。</p>
+                  </article>
+                  <div class="composer">
+                    <input id="chatInput" type="text" placeholder="输入消息，@AI 助教可调用" />
+                    <button id="chatButton" type="button"><i data-lucide="send"></i></button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section class="section-block span-7" id="lesson" aria-labelledby="lessonTitle">
+              <div class="section-title compact">
+                <div>
+                  <h2 id="lessonTitle">教学流程合成台</h2>
+                  <span>Lesson Flow</span>
+                </div>
+                <span class="status-pill">合成预览</span>
+              </div>
+
+              <div class="studio-grid">
+                <div class="preview-stage" aria-label="课堂预览">
+                  <div class="screen-card">
+                    <span>滑动窗口代码讲评</span>
+                    <strong>三步诊断法</strong>
+                    <p>失败用例 → 窗口状态 → 边界修正</p>
+                    <span class="play-badge"><i data-lucide="play"></i></span>
+                  </div>
+                  <div class="timeline-strip">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+
+                <aside class="lesson-detail">
+                  <span class="status-pill">#1 今日主线</span>
+                  <h3>15 分钟补弱课</h3>
+                  <dl>
+                    <div><dt>目标</dt><dd>掌握窗口左边界更新</dd></div>
+                    <div><dt>对象</dt><dd>8 名待干预学生</dd></div>
+                    <div><dt>产物</dt><dd>投屏流程 + 分层练习</dd></div>
+                  </dl>
+                </aside>
+              </div>
+            </section>
+
+            <section class="section-block span-6" id="library" aria-labelledby="libraryTitle">
+              <div class="section-title compact">
+                <div>
+                  <h2 id="libraryTitle">题库素材</h2>
+                  <span>Materials</span>
+                </div>
+              </div>
+
+              <div class="asset-grid">
+                <article class="asset-card" data-search="诊断 报告 学情 Python">
+                  <div class="asset-thumb report"></div>
+                  <h3>Python 学情诊断报告</h3>
+                  <span>报告 · 06/20 13:04</span>
+                </article>
+                <article class="asset-card" data-search="错题 截图 滑动窗口">
+                  <div class="asset-thumb question"></div>
+                  <h3>滑动窗口错因截图</h3>
+                  <span>图片 · 06/20 13:04</span>
+                </article>
+                <article class="asset-card" data-search="课件 Python AST 诊断">
+                  <div class="asset-thumb slides"></div>
+                  <h3>AST 代码诊断课件</h3>
+                  <span>课件 · 06/20 13:04</span>
+                </article>
+              </div>
+            </section>
+
+            <section class="section-block span-6" aria-labelledby="topicTitle">
+              <div class="section-title compact">
+                <div>
+                  <h2 id="topicTitle">话题分析</h2>
+                  <span>Topic Insight</span>
+                </div>
+              </div>
+
+              <div class="topic-layout">
+                <ol class="topic-list">
+                  <li class="topic-item active" data-search="滑动窗口 边界 指针">
+                    <strong>为什么会想到滑动窗口，却总在边界失分？</strong>
+                    <span>06/20 07:45 · AI 选题</span>
+                  </li>
+                  <li class="topic-item" data-search="哈希表 字典 计数">
+                    <strong>哈希表不是背模板，而是维护状态</strong>
+                    <span>06/20 07:45 · AI 选题</span>
+                  </li>
+                  <li class="topic-item" data-search="错题 复盘 测试用例">
+                    <strong>错题复盘如何从“改代码”变成“改思路”？</strong>
+                    <span>06/20 07:45 · AI 选题</span>
+                  </li>
+                </ol>
+                <article class="topic-detail">
+                  <span class="status-pill">AI 选题</span>
+                  <h3>为什么会想到滑动窗口，却总在边界失分？</h3>
+                  <p>切入：学生知道用双指针，但常常没有明确窗口必须满足的约束。</p>
+                  <p>方向：用“失败用例、窗口状态、左边界修正”的闭环训练，把调试过程显性化。</p>
+                  <p>推荐指数：★★★★☆</p>
+                </article>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
