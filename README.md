@@ -1,6 +1,6 @@
-# ITS Python 智能教学系统 v1.4 Agent MVP
+# ITS Python 智能教学系统 v1.5 DeepSeek Agent MVP
 
-这是一个面向 Python 编程学习的 ITS（Intelligent Tutoring System，智能教学系统）最小可运行 Agent 项目。它在原 v1.3 前端原型基础上，新增了 FastAPI 后端、真实大模型 API 接入、本地教学知识库 RAG、任务路由、工具调用和自动评估报告。
+这是一个面向 Python 编程学习的 ITS（Intelligent Tutoring System，智能教学系统）最小可运行 Agent 项目。它在原 v1.3 前端原型基础上，新增了 FastAPI 后端、DeepSeek API 接入、本地教学知识库 RAG、任务路由、工具调用和自动评估报告。
 
 ## 已实现链路
 
@@ -25,7 +25,7 @@ Agent 识别任务类型
 - 任务路由：识别 `lesson_plan` 和 `exercise_generation` 两类任务。
 - 本地 RAG：`backend/app/data/knowledge_base.jsonl` 中包含 30 条 Python 教学知识。
 - 工具调用：内置 `lesson_planner` 和 `exercise_generator` 两个工具。
-- 大模型 API：支持 OpenAI-compatible Chat Completions API。
+- 大模型 API：默认接入 DeepSeek Chat Completions API，同时保留 OpenAI-compatible 配置。
 - 自动评估：25 条测试数据，输出路由准确率、工具调用成功率和生成质量粗评分。
 
 ## 环境准备
@@ -46,7 +46,7 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-## 配置真实大模型 API
+## 配置 DeepSeek API
 
 复制环境变量样例：
 
@@ -57,13 +57,24 @@ cp .env.example .env
 然后在 `.env` 中填写：
 
 ```text
-OPENAI_API_KEY=你的 API Key
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_BASE_URL=https://api.openai.com/v1
-LLM_PROVIDER=openai
+DEEPSEEK_API_KEY=你的 DeepSeek API Key
+DEEPSEEK_MODEL=deepseek-v4-flash
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_THINKING=disabled
+DEEPSEEK_REASONING_EFFORT=high
+LLM_PROVIDER=deepseek
 ```
 
-如果没有配置 `OPENAI_API_KEY`，系统会进入本地 mock 演示模式，方便跑通页面和评估；配置 key 后，后端会真实调用大模型 API。
+如果没有配置 `DEEPSEEK_API_KEY`，系统会进入本地 mock 演示模式，方便跑通页面和评估；配置 key 后，后端会真实调用 DeepSeek API。
+
+模型建议：
+
+- `deepseek-v4-flash`：默认推荐，适合课堂教案、练习题和学生小助手高频对话。
+- `deepseek-v4-pro`：适合更复杂的代码诊断、项目方案设计或需要更强推理的场景。
+
+说明：截至 2026-09-01，DeepSeek 官方推荐使用 `deepseek-v4-flash` 或 `deepseek-v4-pro`。旧模型名 `deepseek-chat`、`deepseek-reasoner` 已在 2026-07-24 后停止作为推荐接入口。
+
+可选：如果要切回其它 OpenAI-compatible 服务，可以把 `LLM_PROVIDER` 改成 `openai`，并填写 `OPENAI_API_KEY`、`OPENAI_MODEL`、`OPENAI_BASE_URL`。
 
 ## 启动后端
 
@@ -146,7 +157,7 @@ backend/
     main.py           # FastAPI 入口
     router.py         # 任务路由
     rag.py            # 本地知识库检索
-    llm.py            # 真实大模型 API / mock 客户端
+    llm.py            # DeepSeek API / OpenAI-compatible / mock 客户端
     tools.py          # 教案生成、练习题生成工具
     evaluation.py     # 自动评估逻辑
     data/

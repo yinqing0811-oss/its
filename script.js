@@ -232,7 +232,7 @@ const renderAgentResponse = (data) => {
   if (agentStatus) {
     agentStatus.textContent = data.llm_used
       ? `已调用真实大模型：${data.llm_model}`
-      : "已完成 Mock 演示：配置 OPENAI_API_KEY 后调用真实大模型";
+      : "已完成 Mock 演示：配置 DEEPSEEK_API_KEY 后调用 DeepSeek";
   }
   if (agentTask) agentTask.textContent = `${taskLabel} · 置信度 ${data.route.confidence}`;
   if (agentReason) agentReason.textContent = data.route.reason;

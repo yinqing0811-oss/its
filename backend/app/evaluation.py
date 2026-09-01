@@ -89,7 +89,7 @@ def _render_markdown(summary: dict[str, Any]) -> str:
         "",
         "本报告使用 25 条人工标注测试数据，评估最小可运行 Agent 链路中的任务路由准确率、工具调用成功率和生成质量粗评分。",
         "",
-        "评估运行使用 `MockLLMClient` 固定输出，目的是稳定检测路由、RAG、工具调用和结构化输出。生产运行时配置 `OPENAI_API_KEY` 后会调用真实大模型 API。",
+        "评估运行使用 `MockLLMClient` 固定输出，目的是稳定检测路由、RAG、工具调用和结构化输出。生产运行时配置 `DEEPSEEK_API_KEY` 后会调用 DeepSeek API。",
         "",
         "## 指标汇总",
         "",

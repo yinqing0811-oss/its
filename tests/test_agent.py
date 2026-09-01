@@ -1,8 +1,8 @@
 from pathlib import Path
 
 from backend.app.agent import AgentService
-from backend.app.config import get_settings
-from backend.app.llm import MockLLMClient
+from backend.app.config import Settings, get_settings
+from backend.app.llm import FallbackLLMClient, MockLLMClient, build_llm_client
 from backend.app.models import AgentRequest
 from backend.app.rag import KnowledgeBase
 from backend.app.router import route_request
@@ -63,3 +63,46 @@ def test_agent_runs_full_exercise_chain(tmp_path: Path):
     assert response.output["type"] == "exercise_set"
     assert len(response.output["exercises"]) == 3
     assert response.evaluation_record["tool_success"] is True
+
+
+def test_deepseek_is_default_provider(monkeypatch):
+    monkeypatch.delenv("LLM_PROVIDER", raising=False)
+    monkeypatch.delenv("DEEPSEEK_MODEL", raising=False)
+    monkeypatch.setenv("DEEPSEEK_API_KEY", "sk-test")
+
+    settings = get_settings()
+
+    assert settings.llm_provider == "deepseek"
+    assert settings.effective_llm_api_key == "sk-test"
+    assert settings.effective_llm_base_url == "https://api.deepseek.com"
+    assert settings.effective_llm_model == "deepseek-v4-flash"
+
+
+def test_deepseek_client_uses_mock_fallback_without_key():
+    settings = Settings(
+        llm_provider="deepseek",
+        deepseek_api_key=None,
+        openai_api_key=None,
+        allow_mock_when_no_key=True,
+    )
+    client = build_llm_client(settings)
+
+    result = client.generate("system", "请生成练习题")
+
+    assert result.provider == "mock"
+    assert result.used_real_api is False
+
+
+def test_deepseek_client_configuration_uses_v4_flash():
+    settings = Settings(
+        llm_provider="deepseek",
+        deepseek_api_key="sk-test",
+        allow_mock_when_no_key=False,
+    )
+    client = build_llm_client(settings)
+
+    assert isinstance(client, FallbackLLMClient)
+    assert client.primary.provider == "deepseek"
+    assert client.primary.base_url == "https://api.deepseek.com"
+    assert client.primary.model == "deepseek-v4-flash"
+    assert client.primary.extra_payload["thinking"]["type"] == "disabled"

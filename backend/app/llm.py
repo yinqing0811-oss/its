@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Optional, Protocol
 
 import httpx
 
@@ -37,45 +37,116 @@ class MockLLMClient:
         return LLMResult(text=text, provider="mock", model="deterministic-mock", used_real_api=False)
 
 
-class OpenAICompatibleClient:
-    def __init__(self, settings: Settings):
-        self.settings = settings
+class ChatCompletionsClient:
+    def __init__(
+        self,
+        provider: str,
+        api_key: Optional[str],
+        api_key_env_name: str,
+        base_url: str,
+        model: str,
+        extra_payload: Optional[dict[str, Any]] = None,
+    ):
+        self.provider = provider
+        self.api_key = api_key
+        self.api_key_env_name = api_key_env_name
+        self.base_url = base_url
+        self.model = model
+        self.extra_payload = extra_payload or {}
 
     def generate(self, system_prompt: str, user_prompt: str) -> LLMResult:
-        if not self.settings.openai_api_key:
-            if self.settings.allow_mock_when_no_key:
-                return MockLLMClient().generate(system_prompt, user_prompt)
-            raise RuntimeError("OPENAI_API_KEY is required when mock fallback is disabled.")
+        if not self.api_key:
+            raise RuntimeError(f"{self.api_key_env_name} is required when mock fallback is disabled.")
 
-        url = f"{self.settings.openai_base_url.rstrip('/')}/chat/completions"
-        payload = {
-            "model": self.settings.openai_model,
-            "temperature": 0.3,
+        url = f"{self.base_url.rstrip('/')}/chat/completions"
+        payload: dict[str, Any] = {
+            "model": self.model,
             "messages": [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
         }
+        payload.update(self.extra_payload)
         headers = {
-            "Authorization": f"Bearer {self.settings.openai_api_key}",
+            "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
         }
 
-        with httpx.Client(timeout=40.0) as client:
-            response = client.post(url, headers=headers, json=payload)
-            response.raise_for_status()
-            data = response.json()
+        try:
+            with httpx.Client(timeout=40.0) as client:
+                response = client.post(url, headers=headers, json=payload)
+                response.raise_for_status()
+                data = response.json()
+        except httpx.HTTPStatusError as exc:
+            detail = exc.response.text[:500]
+            raise RuntimeError(
+                f"{self.provider} API request failed with HTTP {exc.response.status_code}: {detail}"
+            ) from exc
+        except httpx.RequestError as exc:
+            raise RuntimeError(f"{self.provider} API request failed: {exc}") from exc
 
-        text = data["choices"][0]["message"]["content"]
+        try:
+            text = data["choices"][0]["message"]["content"]
+        except (KeyError, IndexError, TypeError) as exc:
+            raise RuntimeError(f"Unexpected {self.provider} API response shape: {data}") from exc
+
         return LLMResult(
             text=text,
-            provider="openai-compatible",
-            model=self.settings.openai_model,
+            provider=self.provider,
+            model=self.model,
             used_real_api=True,
         )
 
 
+class FallbackLLMClient:
+    def __init__(self, primary: ChatCompletionsClient, allow_mock_when_no_key: bool):
+        self.primary = primary
+        self.allow_mock_when_no_key = allow_mock_when_no_key
+
+    def generate(self, system_prompt: str, user_prompt: str) -> LLMResult:
+        if not self.primary.api_key and self.allow_mock_when_no_key:
+            return MockLLMClient().generate(system_prompt, user_prompt)
+        return self.primary.generate(system_prompt, user_prompt)
+
+
+def _build_deepseek_client(settings: Settings) -> ChatCompletionsClient:
+    extra_payload: dict[str, Any] = {
+        "thinking": {"type": "enabled" if settings.deepseek_thinking_enabled else "disabled"},
+    }
+    if settings.deepseek_thinking_enabled:
+        extra_payload["reasoning_effort"] = settings.deepseek_reasoning_effort
+    else:
+        extra_payload["temperature"] = settings.llm_temperature
+
+    return ChatCompletionsClient(
+        provider="deepseek",
+        api_key=settings.effective_llm_api_key,
+        api_key_env_name=settings.effective_key_env_name,
+        base_url=settings.deepseek_base_url,
+        model=settings.deepseek_model,
+        extra_payload=extra_payload,
+    )
+
+
+def _build_openai_compatible_client(settings: Settings) -> ChatCompletionsClient:
+    provider = "openai-compatible" if settings.normalized_provider == "openai" else settings.normalized_provider
+    return ChatCompletionsClient(
+        provider=provider,
+        api_key=settings.openai_api_key,
+        api_key_env_name="OPENAI_API_KEY",
+        base_url=settings.openai_base_url,
+        model=settings.openai_model,
+        extra_payload={"temperature": settings.llm_temperature},
+    )
+
+
 def build_llm_client(settings: Settings) -> LLMClientProtocol:
-    if settings.llm_provider.lower() == "mock":
+    if settings.normalized_provider == "mock":
         return MockLLMClient()
-    return OpenAICompatibleClient(settings)
+
+    if settings.normalized_provider == "deepseek":
+        primary = _build_deepseek_client(settings)
+    else:
+        primary = _build_openai_compatible_client(settings)
+
+    return FallbackLLMClient(primary=primary, allow_mock_when_no_key=settings.allow_mock_when_no_key)

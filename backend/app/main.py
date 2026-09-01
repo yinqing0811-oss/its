@@ -13,7 +13,7 @@ from .models import AgentRequest, AgentResponse, KnowledgeSearchResponse
 settings = get_settings()
 service = AgentService(settings=settings)
 
-app = FastAPI(title=settings.app_name, version="1.4.0")
+app = FastAPI(title=settings.app_name, version="1.5.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,7 +30,9 @@ def health() -> dict[str, Union[str, bool]]:
         "status": "ok",
         "app": settings.app_name,
         "llm_provider": settings.llm_provider,
-        "has_openai_key": bool(settings.openai_api_key),
+        "llm_model": settings.effective_llm_model,
+        "has_llm_key": bool(settings.effective_llm_api_key),
+        "has_deepseek_key": bool(settings.deepseek_api_key),
     }
 
 

@@ -15,6 +15,6 @@ pip install -r requirements.txt
 if exist ".env" (
   uvicorn backend.app.main:app --reload --port 8000 --env-file .env
 ) else (
-  echo .env not found. The backend will use mock LLM mode unless OPENAI_API_KEY is already set.
+  echo .env not found. The backend will use mock LLM mode unless DEEPSEEK_API_KEY is already set.
   uvicorn backend.app.main:app --reload --port 8000
 )
