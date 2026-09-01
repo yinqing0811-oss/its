@@ -52,6 +52,15 @@ const nextAction = document.querySelector("[data-next-action]");
 const teachingSave = document.querySelector("[data-teaching-save]");
 const teachingStatus = document.querySelector("[data-teaching-status]");
 const weightSliders = document.querySelectorAll("[data-weight-slider]");
+const agentStatus = document.querySelector("[data-agent-status]");
+const agentTask = document.querySelector("[data-agent-task]");
+const agentReason = document.querySelector("[data-agent-reason]");
+const agentRag = document.querySelector("[data-agent-rag]");
+const agentTool = document.querySelector("[data-agent-tool]");
+const agentEval = document.querySelector("[data-agent-eval]");
+const agentOutput = document.querySelector("[data-agent-output]");
+
+const AGENT_API_BASE = window.ITS_AGENT_API_BASE || "http://localhost:8000";
 
 let selectedRole = "teacher";
 
@@ -205,14 +214,105 @@ document.addEventListener("click", (event) => {
   }
 });
 
-commandButton?.addEventListener("click", () => {
+const renderAgentResponse = (data) => {
+  const taskLabel =
+    data.route.task_type === "exercise_generation" ? "练习题生成" : "结构化教案生成";
+  const sources = data.retrieved_documents
+    .map((doc) => `${doc.id} · ${doc.title}`)
+    .join("\n");
+  const outputSummary =
+    data.output.type === "exercise_set"
+      ? data.output.exercises
+          .map((item) => `${item.level}档：${item.title}｜${item.diagnosis_focus.join("、")}`)
+          .join("\n")
+      : data.output.lesson_flow
+          .map((item) => `${item.stage} ${item.minutes}分钟：${item.activity}`)
+          .join("\n");
+
+  if (agentStatus) {
+    agentStatus.textContent = data.llm_used
+      ? `已调用真实大模型：${data.llm_model}`
+      : "已完成 Mock 演示：配置 OPENAI_API_KEY 后调用真实大模型";
+  }
+  if (agentTask) agentTask.textContent = `${taskLabel} · 置信度 ${data.route.confidence}`;
+  if (agentReason) agentReason.textContent = data.route.reason;
+  if (agentRag) agentRag.textContent = `${data.retrieved_documents.length} 条`;
+  if (agentTool) agentTool.textContent = data.tool_name;
+  if (agentEval) {
+    agentEval.textContent = `工具成功：${data.evaluation_record.tool_success ? "是" : "否"}；已记录 run_id ${data.run_id.slice(0, 8)}`;
+  }
+  if (agentOutput) {
+    agentOutput.textContent = [
+      `标题：${data.output.title}`,
+      "",
+      "RAG 来源：",
+      sources,
+      "",
+      "结构化输出：",
+      outputSummary,
+    ].join("\n");
+  }
+};
+
+const runTeachingAgent = async (request) => {
+  if (!agentStatus || !agentOutput) return;
+
+  agentStatus.textContent = "Agent 正在识别任务、检索知识库并生成结果...";
+  agentOutput.textContent = "请求后端中...";
+
+  try {
+    const response = await fetch(`${AGENT_API_BASE}/api/agent/run`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        teacher_request: request,
+        class_profile: "Python A 班，学生有基础，准备做项目/算法题，近期薄弱点集中在边界条件和复杂度分析。",
+        top_k: 4,
+      }),
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(detail || `HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    renderAgentResponse(data);
+  } catch (error) {
+    agentStatus.textContent = "后端未连接";
+    agentOutput.textContent = [
+      "没有拿到 FastAPI 后端响应。",
+      "",
+      "请在项目根目录运行：",
+      "uvicorn backend.app.main:app --reload --port 8000",
+      "",
+      `错误信息：${error.message}`,
+    ].join("\n");
+  }
+};
+
+commandButton?.addEventListener("click", async () => {
   const request = commandInput.value.trim() || "生成今日教学任务";
-  commandInput.value = `${request} · 已生成课堂流程`;
+  commandInput.value = request;
   commandButton.classList.add("is-done");
+  commandButton.disabled = true;
+
+  if (document.body.dataset.role === "teacher") {
+    await runTeachingAgent(request);
+  } else {
+    commandInput.value = `${request} · 已加入学习任务`;
+  }
 
   window.setTimeout(() => {
     commandButton.classList.remove("is-done");
+    commandButton.disabled = false;
   }, 1400);
+});
+
+commandInput?.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    commandButton?.click();
+  }
 });
 
 taskCards.forEach((card) => {

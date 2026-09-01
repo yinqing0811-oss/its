@@ -224,6 +224,45 @@
                 <i data-lucide="arrow-right"></i>
               </button>
             </div>
+
+            <div class="agent-mvp-panel" data-visible-role="teacher" aria-live="polite">
+              <div class="agent-mvp-heading">
+                <div>
+                  <span>Agent MVP Chain</span>
+                  <h2>教师需求智能生成链路</h2>
+                </div>
+                <strong data-agent-status>等待教师输入教学需求</strong>
+              </div>
+
+              <div class="agent-flow-steps" aria-label="Agent 任务链路">
+                <span>1 识别任务</span>
+                <span>2 检索知识库</span>
+                <span>3 调用大模型</span>
+                <span>4 调用工具</span>
+                <span>5 记录评估</span>
+              </div>
+
+              <div class="agent-result-grid">
+                <article>
+                  <span>任务类型</span>
+                  <strong data-agent-task>未运行</strong>
+                  <p data-agent-reason>输入后由后端 Agent 判断是教案生成还是练习题生成。</p>
+                </article>
+                <article>
+                  <span>RAG 命中</span>
+                  <strong data-agent-rag>0 条</strong>
+                  <p>返回本地教学知识库中最相关的材料。</p>
+                </article>
+                <article>
+                  <span>工具调用</span>
+                  <strong data-agent-tool>未调用</strong>
+                  <p data-agent-eval>等待生成评估记录。</p>
+                </article>
+              </div>
+
+              <pre class="agent-output" data-agent-output>启动后端：uvicorn backend.app.main:app --reload --port 8000
+然后点击右侧箭头运行真实 Agent 链路。</pre>
+            </div>
           </section>
 
           <section

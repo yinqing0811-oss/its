@@ -1,0 +1,177 @@
+[
+  {
+    "id": "case001",
+    "teacher_request": "为 Python A 班设计 15 分钟滑动窗口补弱课，重点讲 abba 为什么会失败",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["滑动窗口", "边界", "诊断"]
+  },
+  {
+    "id": "case002",
+    "teacher_request": "生成 6 道哈希表两数之和变式练习题，按 A/B/C 三档分层",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["哈希表", "练习", "A/B/C"]
+  },
+  {
+    "id": "case003",
+    "teacher_request": "帮我写一份递归到动态规划的结构化教案，学生已经会基础递归",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["动态规划", "状态", "教案"]
+  },
+  {
+    "id": "case004",
+    "teacher_request": "出一组文件处理项目作业，要求覆盖空文件、大小写归一化和 Counter 统计",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["文件", "项目", "测试"]
+  },
+  {
+    "id": "case005",
+    "teacher_request": "设计一节复杂度分析讲评课，让学生能解释为什么双重循环会超时",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["复杂度", "讲评", "评价"]
+  },
+  {
+    "id": "case006",
+    "teacher_request": "给滑动窗口生成 4 道隐藏用例训练题，突出 left 不能回退",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["滑动窗口", "隐藏", "用例"]
+  },
+  {
+    "id": "case007",
+    "teacher_request": "做一个面向 Python B 班的项目课教学方案，主题是文本词频分析器",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["项目", "文本", "流程"]
+  },
+  {
+    "id": "case008",
+    "teacher_request": "生成一套异常处理练习题，让学生处理文件不存在和输入格式错误",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["异常处理", "练习", "边界"]
+  },
+  {
+    "id": "case009",
+    "teacher_request": "设计一节 BFS 和 DFS 对比讲解课，结合迷宫路径案例",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["BFS", "DFS", "讲解"]
+  },
+  {
+    "id": "case010",
+    "teacher_request": "请出 5 道函数设计与返回值结构化的编程题",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["函数", "返回值", "编程题"]
+  },
+  {
+    "id": "case011",
+    "teacher_request": "准备一份算法题讲评课流程，重点是失败用例如何映射到知识点",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["讲评", "知识点", "诊断"]
+  },
+  {
+    "id": "case012",
+    "teacher_request": "生成边界测试专项题单，覆盖空输入、单元素和重复元素",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["边界", "题单", "测试"]
+  },
+  {
+    "id": "case013",
+    "teacher_request": "写一个苏格拉底式编程辅导的课堂流程，不直接给学生完整答案",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["苏格拉底", "提示", "答案"]
+  },
+  {
+    "id": "case014",
+    "teacher_request": "给学生模型薄弱的复杂度分析生成 3 道补救练习题",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["复杂度", "补救", "练习"]
+  },
+  {
+    "id": "case015",
+    "teacher_request": "设计一个遗忘曲线复习课，安排哈希表和滑动窗口错题重练",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["遗忘", "复习", "错题"]
+  },
+  {
+    "id": "case016",
+    "teacher_request": "出一套排序算法选择题和编程题，要求比较稳定性和复杂度",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["排序", "选择题", "复杂度"]
+  },
+  {
+    "id": "case017",
+    "teacher_request": "为教师端数据看板设计一个讲解方案，说明如何解释学生预警",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["数据看板", "学生", "预警"]
+  },
+  {
+    "id": "case018",
+    "teacher_request": "生成 Q 矩阵标注练习，让老师判断题目关联哪些知识点",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["Q矩阵", "知识点", "练习"]
+  },
+  {
+    "id": "case019",
+    "teacher_request": "设计一节 Python 沙箱安全执行的项目课，说明为什么要限制超时和文件访问",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["沙箱", "项目", "安全"]
+  },
+  {
+    "id": "case020",
+    "teacher_request": "给在线编程诊断功能生成测试用例，覆盖 stdout、异常和返回值",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["在线编程", "测试用例", "异常"]
+  },
+  {
+    "id": "case021",
+    "teacher_request": "写一份使用 RAG 知识库生成教学内容的教案",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["RAG", "知识库", "教案"]
+  },
+  {
+    "id": "case022",
+    "teacher_request": "生成任务路由评估数据，包含教学方案和练习题两类需求",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["任务路由", "评估", "练习"]
+  },
+  {
+    "id": "case023",
+    "teacher_request": "设计项目制学习路径的第一节课，连接函数、文件和测试",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["项目制", "函数", "测试"]
+  },
+  {
+    "id": "case024",
+    "teacher_request": "出一组诊断模型错误类型识别练习，区分语法、逻辑和输出格式错误",
+    "expected_task_type": "exercise_generation",
+    "expected_tool": "exercise_generator",
+    "expected_keywords": ["错误类型", "语法", "逻辑"]
+  },
+  {
+    "id": "case025",
+    "teacher_request": "安排一节学生模型可解释性的教师培训课，说明掌握度和 Elo 怎么用",
+    "expected_task_type": "lesson_plan",
+    "expected_tool": "lesson_planner",
+    "expected_keywords": ["学生模型", "掌握度", "Elo"]
+  }
+]

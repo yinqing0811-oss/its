@@ -625,6 +625,122 @@ body:not(.auth-gated) .role-gate {
   height: 50px;
 }
 
+.agent-mvp-panel {
+  max-width: 1160px;
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: var(--soft-shadow);
+}
+
+.agent-mvp-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.agent-mvp-heading span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.agent-mvp-heading h2 {
+  margin: 0;
+  font-family: "Songti SC", "STSong", serif;
+  font-size: 24px;
+}
+
+.agent-mvp-heading strong {
+  flex: 0 0 auto;
+  max-width: 340px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--surface-blue);
+  color: var(--accent-strong);
+  font-size: 14px;
+  text-align: right;
+}
+
+.agent-flow-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.agent-flow-steps span {
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.agent-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.agent-result-grid article {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.agent-result-grid span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.agent-result-grid strong {
+  display: block;
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.agent-result-grid p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.agent-output {
+  min-height: 168px;
+  max-height: 360px;
+  margin: 14px 0 0;
+  padding: 16px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #dff5fb;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
 .icon-button {
   width: 40px;
   height: 40px;
@@ -2516,6 +2632,7 @@ body:not(.auth-gated) .role-gate {
   .assistant-policy-layout,
   .policy-grid,
   .policy-rules,
+  .agent-result-grid,
   .domain-grid,
   .domain-rule-grid,
   .diagnosis-history-grid,
@@ -2653,6 +2770,20 @@ body:not(.auth-gated) .role-gate {
     min-height: 60px;
     padding-left: 16px;
     border-radius: var(--radius);
+  }
+
+  .agent-mvp-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .agent-mvp-heading strong {
+    max-width: none;
+    text-align: left;
+  }
+
+  .agent-flow-steps {
+    grid-template-columns: 1fr;
   }
 
   .shortcut {

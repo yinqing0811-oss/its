@@ -1,19 +1,91 @@
-# ITS Python 智能教学系统 v1.3
+# ITS Python 智能教学系统 v1.4 Agent MVP
 
-这是一个面向 Python 编程学习的 ITS（Intelligent Tutoring System，智能教学系统）前端原型，服务对象是已经有一定 Python 基础、准备做项目或算法题的学生。
+这是一个面向 Python 编程学习的 ITS（Intelligent Tutoring System，智能教学系统）最小可运行 Agent 项目。它在原 v1.3 前端原型基础上，新增了 FastAPI 后端、真实大模型 API 接入、本地教学知识库 RAG、任务路由、工具调用和自动评估报告。
+
+## 已实现链路
+
+```text
+教师输入教学需求
+        ↓
+Agent 识别任务类型
+        ↓
+检索本地教学知识库
+        ↓
+调用大模型生成教学方案
+        ↓
+调用工具生成练习题或结构化教案
+        ↓
+输出结果并记录评估数据
+```
 
 ## 功能范围
 
-- 登录前身份确认：学生入口与教师入口。
-- 教师端：学习空间、学生模型详情、教学模型、领域模型、练习发放、智能小助手规范配置。
-- 学生端：练习中心、在线编程与诊断、自定义测试输入、诊断反馈、Python 智能小助手对话。
-- 智能小助手：采用苏格拉底式引导，不直接给完整代码或最终答案。
+- 前端页面：学生/教师身份入口、教师工作台、学生模型、教学模型、领域模型、练习发放、在线编程与诊断、智能小助手。
+- 后端服务：基于 FastAPI 的 Agent API。
+- 任务路由：识别 `lesson_plan` 和 `exercise_generation` 两类任务。
+- 本地 RAG：`backend/app/data/knowledge_base.jsonl` 中包含 30 条 Python 教学知识。
+- 工具调用：内置 `lesson_planner` 和 `exercise_generator` 两个工具。
+- 大模型 API：支持 OpenAI-compatible Chat Completions API。
+- 自动评估：25 条测试数据，输出路由准确率、工具调用成功率和生成质量粗评分。
 
-## 本地运行
+## 环境准备
 
-直接双击 `index.html` 即可打开页面。
+建议使用 Python 3.10+。Python 3.9 也可运行，当前项目已做兼容。
 
-如果本机已安装 Python，也可以在项目目录中运行：
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Windows PowerShell：
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+## 配置真实大模型 API
+
+复制环境变量样例：
+
+```bash
+cp .env.example .env
+```
+
+然后在 `.env` 中填写：
+
+```text
+OPENAI_API_KEY=你的 API Key
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_BASE_URL=https://api.openai.com/v1
+LLM_PROVIDER=openai
+```
+
+如果没有配置 `OPENAI_API_KEY`，系统会进入本地 mock 演示模式，方便跑通页面和评估；配置 key 后，后端会真实调用大模型 API。
+
+## 启动后端
+
+```bash
+uvicorn backend.app.main:app --reload --port 8000 --env-file .env
+```
+
+也可以不使用 `.env`，直接在 shell 中设置环境变量后运行：
+
+```bash
+uvicorn backend.app.main:app --reload --port 8000
+```
+
+健康检查：
+
+```text
+http://localhost:8000/api/health
+```
+
+## 启动前端
+
+另开一个终端：
 
 ```bash
 python -m http.server 5174
@@ -25,23 +97,80 @@ python -m http.server 5174
 http://localhost:5174/
 ```
 
-## 文件说明
+进入教师端后，在首页输入教学需求，例如：
 
-- `index.html`：页面结构与系统入口。
-- `styles.css`：页面样式。
-- `script.js`：页面交互逻辑。
-- `vendor/lucide.js`：本地图标库，避免依赖外部 CDN。
-- `docs/ITS_system_design_report_v1.3.docx`：ITS 系统设计报告完善版。
-- `VERSION.txt`：版本说明。
+```text
+生成 Python A 班 15 分钟滑动窗口补弱课
+```
 
-## 当前版本
+点击箭头即可调用后端 Agent。
 
-- 版本：v1.3
-- 主要更新：新增学生端在线编程自定义测试输入与诊断反馈，完善教师端练习发放和小助手策略配置。
+## API 示例
 
-## 后续计划
+```bash
+curl -X POST http://localhost:8000/api/agent/run \
+  -H "Content-Type: application/json" \
+  -d '{
+    "teacher_request": "生成 6 道哈希表练习题，按 A/B/C 三档分层",
+    "class_profile": "Python A 班，学生有基础，准备做算法题。",
+    "top_k": 4
+  }'
+```
 
-- 接入后端 API 与数据库。
-- 接入真实 Python 沙箱运行环境。
-- 实现规则掌握度、Q 矩阵、BKT、IRT/Elo、遗忘曲线等学生模型算法。
-- 将智能小助手与诊断模型、学生模型上下文联动。
+## 自动评估
+
+运行：
+
+```bash
+LLM_PROVIDER=mock python backend/run_evaluation.py
+```
+
+输出文件：
+
+- `reports/evaluation_report.md`
+- `reports/evaluation_results.json`
+
+当前评估结果：
+
+- 测试样本数：25
+- 任务路由准确率：100.00%
+- 工具调用成功率：100.00%
+- 平均生成质量分：99.20 / 100
+
+## 目录结构
+
+```text
+backend/
+  app/
+    agent.py          # Agent 编排链路
+    main.py           # FastAPI 入口
+    router.py         # 任务路由
+    rag.py            # 本地知识库检索
+    llm.py            # 真实大模型 API / mock 客户端
+    tools.py          # 教案生成、练习题生成工具
+    evaluation.py     # 自动评估逻辑
+    data/
+      knowledge_base.jsonl
+      evaluation_cases.json
+tests/
+reports/
+index.html
+script.js
+styles.css
+```
+
+## 测试
+
+```bash
+pytest -q
+```
+
+当前单元测试：
+
+```text
+5 passed
+```
+
+## 说明
+
+当前版本是 Agent MVP，已经具备真实链路和工程结构，但 Python 在线判题沙箱仍是前端演示逻辑。下一阶段建议增加数据库、真实代码执行沙箱、用户鉴权和教师人工评分闭环。
