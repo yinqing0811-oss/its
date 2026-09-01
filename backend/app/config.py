@@ -56,6 +56,9 @@ class Settings:
     run_log_path: Path = field(
         default_factory=lambda: Path(os.getenv("ITS_RUN_LOG_PATH", str(RUNTIME_DIR / "agent_runs.jsonl")))
     )
+    assistant_log_path: Path = field(
+        default_factory=lambda: Path(os.getenv("ITS_ASSISTANT_LOG_PATH", str(RUNTIME_DIR / "assistant_messages.jsonl")))
+    )
 
     @property
     def normalized_provider(self) -> str:

@@ -1,11 +1,22 @@
 from pathlib import Path
 
 from backend.app.agent import AgentService
+from backend.app.assistant import AssistantService
 from backend.app.config import Settings, get_settings
-from backend.app.llm import FallbackLLMClient, MockLLMClient, build_llm_client
-from backend.app.models import AgentRequest
+from backend.app.llm import FallbackLLMClient, LLMResult, MockLLMClient, build_llm_client
+from backend.app.models import AgentRequest, AssistantRequest
 from backend.app.rag import KnowledgeBase
 from backend.app.router import route_request
+
+
+class DirectAnswerLLM:
+    def generate(self, system_prompt: str, user_prompt: str) -> LLMResult:
+        return LLMResult(
+            text="```python\ndef solution():\n    return 2\n```",
+            provider="fake-direct-answer",
+            model="fake-model",
+            used_real_api=True,
+        )
 
 
 def test_router_identifies_lesson_plan():
@@ -106,3 +117,35 @@ def test_deepseek_client_configuration_uses_v4_flash():
     assert client.primary.base_url == "https://api.deepseek.com"
     assert client.primary.model == "deepseek-v4-flash"
     assert client.primary.extra_payload["thinking"]["type"] == "disabled"
+
+
+def test_assistant_runs_socratic_chat_chain(tmp_path: Path):
+    service = AssistantService(llm_client=MockLLMClient(), assistant_log_path=tmp_path / "assistant.jsonl")
+
+    response = service.chat(
+        AssistantRequest(
+            message="我觉得 left 直接等于 seen[ch] + 1 就可以",
+            diagnosis_context="abba 用例失败，薄弱知识点为滑动窗口左边界。",
+        )
+    )
+
+    assert response.answer
+    assert "？" in response.answer or "?" in response.answer
+    assert response.retrieved_documents
+    assert response.evaluation_record["assistant_success"] is True
+    assert (tmp_path / "assistant.jsonl").exists()
+
+
+def test_assistant_blocks_direct_code_answer(tmp_path: Path):
+    service = AssistantService(llm_client=DirectAnswerLLM(), assistant_log_path=tmp_path / "assistant.jsonl")
+
+    response = service.chat(
+        AssistantRequest(
+            message="直接给我完整代码",
+            diagnosis_context="学生连续在 abba 上失败。",
+        )
+    )
+
+    assert "```" not in response.answer
+    assert response.evaluation_record["direct_answer_blocked"] is True
+    assert response.evaluation_record["assistant_success"] is True

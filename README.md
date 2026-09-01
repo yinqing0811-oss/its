@@ -26,6 +26,7 @@ Agent 识别任务类型
 - 本地 RAG：`backend/app/data/knowledge_base.jsonl` 中包含 30 条 Python 教学知识。
 - 工具调用：内置 `lesson_planner` 和 `exercise_generator` 两个工具。
 - 大模型 API：默认接入 DeepSeek Chat Completions API，同时保留 OpenAI-compatible 配置。
+- 智能小助手：学生端对话调用 `/api/assistant/chat`，结合当前题目、诊断上下文、学生模型和 RAG 结果进行苏格拉底式追问。
 - 自动评估：25 条测试数据，输出路由准确率、工具调用成功率和生成质量粗评分。
 
 ## 环境准备
@@ -128,6 +129,22 @@ curl -X POST http://localhost:8000/api/agent/run \
   }'
 ```
 
+学生端智能小助手接口：
+
+```bash
+curl -X POST http://localhost:8000/api/assistant/chat \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "我觉得 left 直接等于 seen[ch] + 1 就可以",
+    "problem_title": "最长无重复子串",
+    "diagnosis_context": "abba 用例失败，薄弱知识点为滑动窗口左边界",
+    "conversation": [
+      {"role": "assistant", "content": "当前窗口里应该始终满足什么条件？"},
+      {"role": "student", "content": "不能有重复字符"}
+    ]
+  }'
+```
+
 ## 自动评估
 
 运行：
@@ -154,6 +171,7 @@ LLM_PROVIDER=mock python backend/run_evaluation.py
 backend/
   app/
     agent.py          # Agent 编排链路
+    assistant.py      # 学生端苏格拉底式智能小助手
     main.py           # FastAPI 入口
     router.py         # 任务路由
     rag.py            # 本地知识库检索

@@ -6,12 +6,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from .agent import AgentService
+from .assistant import AssistantService
 from .config import get_settings
-from .models import AgentRequest, AgentResponse, KnowledgeSearchResponse
+from .models import AgentRequest, AgentResponse, AssistantRequest, AssistantResponse, KnowledgeSearchResponse
 
 
 settings = get_settings()
 service = AgentService(settings=settings)
+assistant_service = AssistantService(settings=settings)
 
 app = FastAPI(title=settings.app_name, version="1.5.0")
 
@@ -40,6 +42,14 @@ def health() -> dict[str, Union[str, bool]]:
 def run_agent(request: AgentRequest) -> AgentResponse:
     try:
         return service.run(request)
+    except Exception as exc:  # pragma: no cover - FastAPI should expose a clean error.
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@app.post("/api/assistant/chat", response_model=AssistantResponse)
+def chat_with_assistant(request: AssistantRequest) -> AssistantResponse:
+    try:
+        return assistant_service.chat(request)
     except Exception as exc:  # pragma: no cover - FastAPI should expose a clean error.
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

@@ -37,6 +37,7 @@ const nextHint = document.querySelector("[data-next-hint]");
 const assistantThread = document.querySelector("[data-assistant-thread]");
 const assistantInput = document.querySelector("#assistantInput");
 const assistantSend = document.querySelector("[data-assistant-send]");
+const assistantStatus = document.querySelector("[data-assistant-status]");
 const policySave = document.querySelector("[data-policy-save]");
 const policyStatus = document.querySelector("[data-policy-status]");
 const knowledgeNodes = document.querySelectorAll("[data-knowledge-node]");
@@ -63,6 +64,20 @@ const agentOutput = document.querySelector("[data-agent-output]");
 const AGENT_API_BASE = window.ITS_AGENT_API_BASE || "http://localhost:8000";
 
 let selectedRole = "teacher";
+let assistantHistory = [
+  {
+    role: "assistant",
+    content: "我们先不急着改代码。你能先说说：当前窗口里应该始终满足什么条件吗？",
+  },
+  {
+    role: "student",
+    content: "窗口里不能有重复字符。",
+  },
+  {
+    role: "assistant",
+    content: "很好。那当遇到一个重复字符时，你觉得左边界应该移动到重复字符上次出现位置之后，还是还需要和当前 left 比较一下？为什么？",
+  },
+];
 
 const roleCopy = {
   teacher: {
@@ -477,16 +492,64 @@ const appendAssistantMessage = (sender, text) => {
   assistantThread.scrollTop = assistantThread.scrollHeight;
 };
 
-assistantSend?.addEventListener("click", () => {
+const buildAssistantRequest = (message) => ({
+  message,
+  student_id: "lin-student-demo",
+  problem_title: "最长无重复子串",
+  problem_context: "给定一个字符串 s，请返回其中不含重复字符的最长子串长度。当前练习要求 O(n)，不能使用双重循环枚举所有子串。",
+  diagnosis_context:
+    diagnosisStatus?.textContent.trim() ||
+    "诊断模型提示：abba 用例暴露滑动窗口 left 回退风险，薄弱知识点为滑动窗口左边界。",
+  student_profile: "学生有 Python 基础，准备做项目/算法题；当前滑动窗口掌握度中等，边界处理偏弱。",
+  assistant_policy: "不直接给完整代码，不直接给最终答案；先提问，再给一个关键线索；连续失败后才允许给伪代码框架。",
+  conversation: assistantHistory.slice(-6),
+  top_k: 4,
+});
+
+const fallbackAssistantAnswer =
+  "后端暂时没有连接成功，我先用本地引导继续：你能用 abba 这个输入，把第二个 a 出现时 left、right 和 seen 分别写出来吗？";
+
+assistantSend?.addEventListener("click", async () => {
   const text = assistantInput?.value.trim();
   if (!text) return;
 
   appendAssistantMessage("student", text);
+  assistantHistory.push({ role: "student", content: text });
   assistantInput.value = "";
-  appendAssistantMessage(
-    "ai",
-    "我们沿着你的想法继续：你能用一个具体测试用例说明 left 为什么不能回退吗？比如 abba 中第二个 a 出现时，当前窗口是什么？",
-  );
+  assistantSend.disabled = true;
+  if (assistantStatus) {
+    assistantStatus.textContent = "小助手正在结合诊断结果、学生模型和本地知识库生成追问...";
+  }
+
+  try {
+    const response = await fetch(`${AGENT_API_BASE}/api/assistant/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(buildAssistantRequest(text)),
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(detail || `HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    appendAssistantMessage("ai", data.answer);
+    assistantHistory.push({ role: "assistant", content: data.answer });
+    if (assistantStatus) {
+      assistantStatus.textContent = data.llm_used
+        ? `已调用 DeepSeek：${data.llm_model}；RAG 命中 ${data.retrieved_documents.length} 条。`
+        : "已使用 Mock 演示：配置 DEEPSEEK_API_KEY 后由 DeepSeek 生成追问。";
+    }
+  } catch (error) {
+    appendAssistantMessage("ai", fallbackAssistantAnswer);
+    assistantHistory.push({ role: "assistant", content: fallbackAssistantAnswer });
+    if (assistantStatus) {
+      assistantStatus.textContent = `后端未连接，已使用本地引导回复。错误：${error.message}`;
+    }
+  } finally {
+    assistantSend.disabled = false;
+  }
 });
 
 assistantInput?.addEventListener("keydown", (event) => {

@@ -1,4 +1,4 @@
 ITS Python 智能教学系统
-版本: v1.5 DeepSeek Agent MVP
+版本: v1.5 DeepSeek Socratic Agent MVP
 基础版本: v1.3 add custom coding judge input
-主要更新: 新增 FastAPI 后端、DeepSeek API 接入、本地 RAG 知识库、任务路由、教案/练习题工具、25 条评估数据和测试报告。
+主要更新: 新增 FastAPI 后端、DeepSeek API 接入、学生端智能小助手 API、本地 RAG 知识库、任务路由、教案/练习题工具、25 条评估数据和测试报告。
